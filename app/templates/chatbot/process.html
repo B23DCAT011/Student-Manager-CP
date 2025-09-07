@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PredAI Chat - AI Assistant</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    /* Icon alignment fixes */
+    .page-title i,
+    .message-sender i,
+    .input-controls i,
+    .action-btn i,
+    .back-btn i {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .page-title i {
+      width: 32px;
+      height: 32px;
+    }
+
+    .message-sender i,
+    .input-controls i,
+    .action-btn i,
+    .back-btn i {
+      width: 16px;
+      height: 16px;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #5856eb;
+      --primary-light: #eef2ff;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 0.5rem;
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --border: #334155;
+      --primary-light: #312e81;
+      --success-light: #064e3b;
+    }
+
+    --radius-lg: 1rem;
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: var(--spacing-lg);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
+      z-index: 1000;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    .theme-toggle i {
+      width: 20px;
+      height: 20px;
+      color: var(--text-primary);
+    }
+
+    .chat-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 3rem);
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      color: white;
+      padding: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-shrink: 0;
+    }
+
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-content h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .header-content p {
+      margin: var(--spacing-xs) 0 0 0;
+      opacity: 0.9;
+      font-size: 0.875rem;
+    }
+
+    .header-actions {
+      margin-left: auto;
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .header-btn {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
+      z-index: 1000;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+      color: var(--text-primary);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: var(--spacing-lg);
+      overflow-y: auto;
+      background: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .message {
+      display: flex;
+      gap: var(--spacing-sm);
+      animation: slideIn 0.3s ease;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.875rem;
+    }
+
+    .message.bot .message-avatar {
+      background: var(--primary);
+      color: white;
+    }
+
+    .message.user .message-avatar {
+      background: var(--success);
+      color: white;
+    }
+
+    .message-content {
+      background: var(--bg-primary);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-lg);
+      max-width: 80%;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .message.user .message-content {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .message-sender {
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+      font-size: 0.875rem;
+    }
+
+    .message.user .message-sender {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .message-text {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .message.user .message-text {
+      color: white;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      max-width: fit-content;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    .chat-input-container {
+      padding: var(--spacing-lg);
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: var(--spacing-sm);
+      align-items: flex-end;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: var(--spacing-md);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      resize: none;
+      min-height: 44px;
+      max-height: 120px;
+      transition: all 0.2s ease;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+      background: var(--bg-primary);
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .send-button {
+      padding: var(--spacing-md);
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 44px;
+    }
+
+    .send-button:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes typing {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(0);
+      }
+
+      40% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: var(--spacing-sm);
+      }
+
+      .chat-container {
+        height: calc(100vh - 1rem);
+      }
+
+      .chat-header {
+        padding: var(--spacing-md);
+      }
+
+      .header-content h2 {
+        font-size: 1.25rem;
+      }
+
+      .message-content {
+        max-width: 90%;
+      }
+
+      .theme-toggle {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon" style="display: none;"></i>
+  </button>
+
+  <div class="chat-container">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="header-icon">
+        <i data-lucide="bot" size="24"></i>
+      </div>
+      <div class="header-content">
+        <h2>PredAI Chat</h2>
+        <p>AI Assistant cho dự đoán kết quả học tập</p>
+      </div>
+      <div class="header-actions">
+        <a href="/student-portal" class="header-btn">
+          <i data-lucide="home" size="16"></i>
+          Trang chủ
+        </a>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="message-avatar">
+          <i data-lucide="bot" size="16"></i>
+        </div>
+        <div class="message-content">
+          <div class="message-sender">PredAI</div>
+          <div class="message-text">
+            👋 Xin chào! Tôi có thể giúp bạn dự đoán tỷ lệ trượt môn dựa trên điểm số của bạn.
+            Hãy hỏi tôi bất kỳ điều gì về kết quả học tập!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="chat-input-container">
+      <form id="chatForm" class="chat-form">
+        <textarea id="chatInput" class="chat-input" placeholder="Nhập câu hỏi của bạn..." rows="1" autocomplete="off"
+          required></textarea>
+        <button type="submit" id="sendButton" class="send-button">
+          <i data-lucide="send" size="20"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Theme toggle functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      // Toggle icons
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+
+      if (newTheme === 'dark') {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Set initial icon state
+    if (savedTheme === 'dark') {
+      document.querySelector('.sun-icon').style.display = 'none';
+      document.querySelector('.moon-icon').style.display = 'block';
+    }
+
+    // Chat functionality
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+
+    // Auto-resize textarea
+    chatInput.addEventListener('input', function () {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Handle Enter key
+    chatInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatForm.dispatchEvent(new Event('submit'));
+      }
+    });
+
+    function appendMessage(type, content, isTyping = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.innerHTML = `<i data-lucide="${type === 'user' ? 'user' : 'bot'}" size="16"></i>`;
+
+      const messageContent = document.createElement('div');
+      messageContent.className = 'message-content';
+
+      if (isTyping) {
+        messageContent.innerHTML = `
+          <div class="typing-indicator">
+            <div class="typing-dots">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+            <span style="margin-left: 8px; color: var(--text-muted); font-size: 0.875rem;">AI đang suy nghĩ...</span>
+          </div>
+        `;
+      } else {
+        const sender = document.createElement('div');
+        sender.className = 'message-sender';
+        sender.textContent = type === 'user' ? 'Bạn' : 'PredAI';
+
+        const text = document.createElement('div');
+        text.className = 'message-text';
+        text.innerHTML = content.replace(/\n/g, '<br>');
+
+        messageContent.appendChild(sender);
+        messageContent.appendChild(text);
+      }
+
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(messageContent);
+      chatMessages.appendChild(messageDiv);
+
+      // Re-initialize icons for new content
+      lucide.createIcons();
+
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      return messageDiv;
+    }
+
+    chatForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const question = chatInput.value.trim();
+      if (!question) return;
+
+      // Add user message
+      appendMessage('user', question);
+
+      // Clear input
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+
+      // Disable send button
+      sendButton.disabled = true;
+
+      // Add typing indicator
+      const typingMessage = appendMessage('bot', '', true);
+
+      try {
+        const response = await fetch('/chatbot/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await response.json();
+
+        // Remove typing indicator
+        typingMessage.remove();
+
+        if (data.answer) {
+          appendMessage('bot', data.answer);
+        } else if (data.error) {
+          appendMessage('bot', `<span style='color: var(--danger)'>❌ ${data.error}</span>`);
+        } else {
+          appendMessage('bot', '<span style="color: var(--danger)">❌ Không nhận được phản hồi phù hợp.</span>');
+        }
+      } catch (error) {
+        // Remove typing indicator
+        typingMessage.remove();
+        appendMessage('bot', '<span style="color: var(--danger)">❌ Lỗi kết nối server.</span>');
+      } finally {
+        // Re-enable send button
+        sendButton.disabled = false;
+        chatInput.focus();
+      }
+    });
+
+    // Focus input on load
+    chatInput.focus();
+
+    // Theme toggle functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      // Toggle icons
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+
+      if (newTheme === 'dark') {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    }
+
+    // Load saved theme (initialize on page load)
+    document.addEventListener('DOMContentLoaded', function () {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+
+      // Set initial icon state
+      if (savedTheme === 'dark') {
+        document.querySelector('.sun-icon').style.display = 'none';
+        document.querySelector('.moon-icon').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+
+</html>

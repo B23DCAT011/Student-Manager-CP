@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Quản lý sinh viên{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root {
+      /* Light theme colors */
+      --primary: #6366f1;
+      --primary-hover: #5856eb;
+      --primary-light: #eef2ff;
+      --secondary: #64748b;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --info: #06b6d4;
+      --info-light: #cffafe;
+
+      /* Neutral colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+      /* Spacing */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+
+      /* Border radius */
+      --radius-sm: 0.375rem;
+      --radius: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.5rem;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --border: #334155;
+      --border-light: #1e293b;
+
+      /* Dark theme specific color adjustments */
+      --primary-light: #312e81;
+      --success-light: #064e3b;
+      --warning-light: #451a03;
+      --danger-light: #7f1d1d;
+      --info-light: #164e63;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      transition: all 0.3s ease;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+
+    .main-content {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: calc(100vh - 3rem);
+    }
+
+    .header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-lg) var(--spacing-xl);
+    }
+
+    .header-brand {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 1.875rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      transition: color 0.2s ease;
+    }
+
+    .header-brand:hover {
+      color: var(--primary-hover);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      align-items: center;
+    }
+
+    /* Modern Button System */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: var(--text-secondary);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: var(--success);
+      opacity: 0.9;
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      opacity: 0.9;
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
+      z-index: 1000;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-xl);
+    }
+
+    /* Flash Messages */
+    .flash-message {
+      padding: var(--spacing-md);
+      border-radius: var(--radius);
+      margin-bottom: var(--spacing-lg);
+      border-left: 4px solid;
+      display: flex;
+      align-items: start;
+      gap: var(--spacing-sm);
+    }
+
+    .flash-message i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .flash-success {
+      background: var(--success-light);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    [data-theme="dark"] .flash-success {
+      color: var(--text-primary);
+    }
+
+    .flash-error {
+      background: var(--danger-light);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    [data-theme="dark"] .flash-error {
+      color: var(--text-primary);
+    }
+
+    .flash-info {
+      background: var(--info-light);
+      border-color: var(--info);
+      color: var(--info);
+    }
+
+    [data-theme="dark"] .flash-info {
+      color: var(--text-primary);
+    }
+
+    /* User Info Bar */
+    .user-bar {
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-sm) 0;
+    }
+
+    .user-bar-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .user-badge {
+      background: var(--primary);
+      color: white;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .user-badge.teacher {
+      background: var(--success);
+    }
+
+    .logout-link {
+      color: var(--danger);
+      text-decoration: none;
+      font-weight: 500;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+
+    .logout-link:hover {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    /* Footer Styles */
+    .footer {
+      background: var(--bg-tertiary);
+      border-top: 1px solid var(--border);
+      margin-top: var(--spacing-2xl);
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing-2xl) var(--spacing-lg);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-xl);
+    }
+
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .footer-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .footer-title i {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .footer-subtitle {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .footer-text {
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .footer-links li {
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      transition: color 0.2s ease;
+    }
+
+    .footer-links li:hover {
+      color: var(--primary);
+    }
+
+    .footer-links li i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .footer-contact p {
+      margin: 0 0 var(--spacing-sm) 0;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .footer-contact i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .footer-bottom p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* General icon alignment fix */
+    i[data-lucide] {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* Header brand icon fix */
+    .header-brand i {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* User info icon fix */
+    .user-info i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: var(--spacing-sm);
+      }
+
+      .header {
+        padding: var(--spacing-md);
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        justify-content: center;
+      }
+
+      .user-bar-content {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        text-align: center;
+      }
+
+      .theme-toggle {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+      }
+
+      .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
+        padding: var(--spacing-xl) var(--spacing-lg);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .header-brand {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <i data-lucide="sun" class="sun-icon"></i>
+    <i data-lucide="moon" class="moon-icon" style="display: none;"></i>
+  </button>
+
+  <!-- User Info Bar -->
+  {% if current_user.is_authenticated %}
+  <div class="user-bar">
+    <div class="user-bar-content">
+      <div class="user-info">
+        <span style="color: var(--text-secondary);">
+          <i data-lucide="user"></i>
+          Xin chào, <strong>{{ current_user.username }}</strong>
+        </span>
+        <span class="user-badge {% if current_user.role == 'teacher' %}teacher{% endif %}">
+          {% if current_user.role == 'teacher' %}
+          <i data-lucide="graduation-cap"></i> Giáo viên
+          {% else %}
+          <i data-lucide="book-open"></i> Sinh viên
+          {% endif %}
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+        <span style="color: var(--text-muted); font-size: 0.875rem;">
+          Đăng nhập: {{ current_user.last_login.strftime('%d/%m/%Y %H:%M') if current_user.last_login else 'N/A' }}
+        </span>
+        <a href="{{ url_for('auth.logout') }}" class="logout-link">
+          <i data-lucide="log-out"></i> Đăng xuất
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="container">
+    <div class="main-content">
+      <div class="header">
+        <a href="{% if current_user.is_authenticated %}{% if current_user.role == 'teacher' %}{{ url_for('home.index') }}{% else %}{{ url_for('auth.student_portal') }}{% endif %}{% else %}/{% endif %}"
+          class="header-brand">
+          <i data-lucide="graduation-cap"></i>
+          Hệ thống quản lý sinh viên
+        </a>
+
+        <!-- Navigation -->
+        {% if current_user.is_authenticated %}
+        {% if current_user.role == 'teacher' %}
+        <!-- Menu for teachers -->
+        <nav class="nav">
+          <a href="{{ url_for('grades.dashboard') }}" class="btn btn-primary">
+            <i data-lucide="bar-chart-3"></i> Dashboard điểm
+          </a>
+          <a href="{{ url_for('grades.list_thanh_phan') }}" class="btn btn-outline">
+            <i data-lucide="clipboard-list"></i> Điểm thành phần
+          </a>
+          <a href="{{ url_for('grades.list_cuoi_ky') }}" class="btn btn-outline">
+            <i data-lucide="target"></i> Điểm cuối kỳ
+          </a>
+          <a href="/students/list" class="btn btn-outline">
+            <i data-lucide="users"></i> Sinh viên
+          </a>
+          <a href="/teachers/list" class="btn btn-outline">
+            <i data-lucide="user-check"></i> Giáo viên
+          </a>
+          <a href="/academics" class="btn btn-outline">
+            <i data-lucide="building"></i> Học thuật
+          </a>
+        </nav>
+        {% else %}
+        <!-- Menu for students -->
+        <nav class="nav">
+          <a href="{{ url_for('auth.student_portal') }}" class="btn btn-primary">
+            <i data-lucide="book-open"></i> Xem điểm của tôi
+          </a>
+          <a href="{{ url_for('chatbot.process') }}" class="btn btn-success">
+            <i data-lucide="bot"></i> AI Assistant
+          </a>
+        </nav>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin: var(--spacing-md) 0 0 0;">
+          <i data-lucide="info"></i> Sinh viên có thể xem điểm cá nhân và chat với AI
+        </p>
+        {% endif %}
+        {% else %}
+        <!-- Menu for guests -->
+        <nav class="nav">
+          <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+            <i data-lucide="log-in"></i> Đăng nhập
+          </a>
+        </nav>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin: var(--spacing-md) 0 0 0;">
+          Vui lòng đăng nhập để sử dụng hệ thống
+        </p>
+        {% endif %}
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div style="padding: 0 var(--spacing-xl) var(--spacing-lg);">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category if category in ['success', 'error', 'info'] else 'info' }}">
+          <i
+            data-lucide="{% if category == 'success' %}check-circle{% elif category == 'error' %}alert-circle{% else %}info{% endif %}"></i>
+          <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <main style="padding: var(--spacing-xl);">
+        {% block content %}{% endblock %}
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4 class="footer-title">
+              <i data-lucide="graduation-cap"></i>
+              Hệ thống quản lý sinh viên
+            </h4>
+            <p class="footer-text">
+              Giải pháp toàn diện cho việc quản lý thông tin sinh viên, điểm số và hoạt động học thuật
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h5 class="footer-subtitle">Chức năng chính</h5>
+            <ul class="footer-links">
+              <li><i data-lucide="users"></i> Quản lý sinh viên</li>
+              <li><i data-lucide="user-check"></i> Quản lý giáo viên</li>
+              <li><i data-lucide="trophy"></i> Quản lý điểm số</li>
+              <li><i data-lucide="building"></i> Quản lý học thuật</li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h5 class="footer-subtitle">Công nghệ</h5>
+            <ul class="footer-links">
+              <li><i data-lucide="code"></i> Flask Python</li>
+              <li><i data-lucide="database"></i> SQLite Database</li>
+              <li><i data-lucide="bot"></i> AI Assistant</li>
+              <li><i data-lucide="mail"></i> Email Service</li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h5 class="footer-subtitle">Liên hệ</h5>
+            <div class="footer-contact">
+              <p><i data-lucide="mail"></i> admin@university.edu.vn</p>
+              <p><i data-lucide="phone"></i> (84) 123-456-789</p>
+              <p><i data-lucide="map-pin"></i> Hà Nội, Việt Nam</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2024 Student Management System. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Theme toggle functionality
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      // Toggle icons
+      const sunIcon = document.querySelector('.sun-icon');
+      const moonIcon = document.querySelector('.moon-icon');
+
+      if (newTheme === 'dark') {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Set initial icon state
+    if (savedTheme === 'dark') {
+      document.querySelector('.sun-icon').style.display = 'none';
+      document.querySelector('.moon-icon').style.display = 'block';
+    }
+
+    // Auto-hide flash messages
+    setTimeout(() => {
+      const flashMessages = document.querySelectorAll('.flash-message');
+      flashMessages.forEach(msg => {
+        msg.style.opacity = '0';
+        msg.style.transform = 'translateY(-10px)';
+        setTimeout(() => msg.remove(), 300);
+      });
+    }, 5000);
+  </script>
+</body>
+
+</html>

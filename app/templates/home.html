@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ - Hệ thống quản lý sinh viên{% endblock %}
+
+{% block content %}
+<style>
+  /* Icon alignment fixes */
+  .stat-icon i,
+  .feature-icon i,
+  .quick-action i,
+  .feature-item-icon i {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .page-title i {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .quick-action-text i {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .hero-section {
+    text-align: center;
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+    color: white;
+    margin: calc(-1 * var(--spacing-xl));
+    margin-bottom: var(--spacing-2xl);
+    border-radius: 0;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-md) 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: white;
+    /* fallback */
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin: 0 0 var(--spacing-xl) 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .stat-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--card-accent, var(--primary));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .stat-card.primary {
+    --card-accent: var(--primary);
+  }
+
+  .stat-card.success {
+    --card-accent: var(--success);
+  }
+
+  .stat-card.warning {
+    --card-accent: var(--warning);
+  }
+
+  .stat-card.danger {
+    --card-accent: var(--danger);
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    background: var(--card-accent, var(--primary));
+    color: white;
+  }
+
+  .stat-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-sm) 0;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .feature-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--card-accent, var(--primary));
+  }
+
+  .feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .feature-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--card-accent, var(--primary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .feature-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .feature-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .highlight-section {
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .highlight-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+  }
+
+  .highlight-item {
+    text-align: center;
+  }
+
+  .highlight-item-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+  }
+
+  .highlight-item-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .highlight-item-desc {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+
+    .stats-grid,
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-card,
+    .feature-card {
+      padding: var(--spacing-lg);
+    }
+  }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+  <h1 class="hero-title">
+    <i data-lucide="graduation-cap"></i>
+    Hệ thống quản lý sinh viên
+  </h1>
+  <p class="hero-subtitle">
+    Giải pháp quản lý toàn diện cho trường học hiện đại
+  </p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card primary">
+    <div class="stat-icon">
+      <i data-lucide="users"></i>
+    </div>
+    <h3 class="stat-title">Sinh viên</h3>
+    <p class="stat-value">{{ student_count }}</p>
+    <p class="stat-label">Đang theo học</p>
+  </div>
+
+  <div class="stat-card success">
+    <div class="stat-icon">
+      <i data-lucide="user-check"></i>
+    </div>
+    <h3 class="stat-title">Giáo viên</h3>
+    <p class="stat-value">{{ teacher_count }}</p>
+    <p class="stat-label">Đang giảng dạy</p>
+  </div>
+
+  <div class="stat-card warning">
+    <div class="stat-icon">
+      <i data-lucide="users-2"></i>
+    </div>
+    <h3 class="stat-title">Lớp học</h3>
+    <p class="stat-value">{{ lop_count }}</p>
+    <p class="stat-label">Đang hoạt động</p>
+  </div>
+
+  <div class="stat-card danger">
+    <div class="stat-icon">
+      <i data-lucide="book-open"></i>
+    </div>
+    <h3 class="stat-title">Học phần</h3>
+    <p class="stat-value">{{ hocphan_count }}</p>
+    <p class="stat-label">Môn học</p>
+  </div>
+</div>
+
+<!-- Feature Cards -->
+<div class="features-grid">
+  <!-- Student Management -->
+  <div class="feature-card primary">
+    <div class="feature-header">
+      <div class="feature-icon">
+        <i data-lucide="users"></i>
+      </div>
+      <h3 class="feature-title">Quản lý sinh viên</h3>
+    </div>
+    <p class="feature-description">
+      Thêm, sửa, xóa và xem thông tin sinh viên. Quản lý hồ sơ học tập và thông tin cá nhân một cách dễ dàng và hiệu
+      quả.
+    </p>
+    <div class="feature-actions">
+      <a href="/students/list" class="btn btn-primary">
+        <i data-lucide="list"></i> Danh sách
+      </a>
+      <a href="/students/add" class="btn btn-success">
+        <i data-lucide="plus"></i> Thêm mới
+      </a>
+    </div>
+  </div>
+
+  <!-- Teacher Management -->
+  <div class="feature-card success">
+    <div class="feature-header">
+      <div class="feature-icon">
+        <i data-lucide="user-check"></i>
+      </div>
+      <h3 class="feature-title">Quản lý giáo viên</h3>
+    </div>
+    <p class="feature-description">
+      Quản lý thông tin giáo viên, chuyên môn và phân công giảng dạy. Theo dõi hiệu suất và đóng góp của từng giáo viên.
+    </p>
+    <div class="feature-actions">
+      <a href="/teachers/list" class="btn btn-primary">
+        <i data-lucide="list"></i> Danh sách
+      </a>
+      <a href="/teachers/add" class="btn btn-success">
+        <i data-lucide="plus"></i> Thêm mới
+      </a>
+    </div>
+  </div>
+
+  <!-- Academic Management -->
+  <div class="feature-card warning">
+    <div class="feature-header">
+      <div class="feature-icon">
+        <i data-lucide="building"></i>
+      </div>
+      <h3 class="feature-title">Quản lý học thuật</h3>
+    </div>
+    <p class="feature-description">
+      Quản lý khoa, ngành, lớp học và các học phần trong chương trình đào tạo. Tổ chức cấu trúc học thuật một cách khoa
+      học.
+    </p>
+    <div class="feature-actions">
+      <a href="/academics" class="btn btn-primary">
+        <i data-lucide="eye"></i> Tổng quan
+      </a>
+    </div>
+  </div>
+
+  <!-- Grade Management -->
+  <div class="feature-card danger">
+    <div class="feature-header">
+      <div class="feature-icon">
+        <i data-lucide="bar-chart-3"></i>
+      </div>
+      <h3 class="feature-title">Quản lý điểm</h3>
+    </div>
+    <p class="feature-description">
+      Nhập điểm, theo dõi kết quả học tập và tạo báo cáo thành tích. Phân tích xu hướng và đưa ra các đề xuất cải thiện.
+    </p>
+    <div class="feature-actions">
+      <a href="/grades" class="btn btn-primary">
+        <i data-lucide="activity"></i> Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Highlight Section -->
+<div class="highlight-section">
+  <h4 class="highlight-title">
+    <i data-lucide="sparkles"></i>
+    Tính năng nổi bật
+  </h4>
+  <div class="highlight-grid">
+    <div class="highlight-item">
+      <div class="highlight-item-icon">
+        <i data-lucide="zap"></i>
+      </div>
+      <h5 class="highlight-item-title">Nhanh chóng</h5>
+      <p class="highlight-item-desc">Giao diện thân thiện, thao tác dễ dàng</p>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-item-icon">
+        <i data-lucide="shield-check"></i>
+      </div>
+      <h5 class="highlight-item-title">An toàn</h5>
+      <p class="highlight-item-desc">Bảo mật thông tin sinh viên tuyệt đối</p>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-item-icon">
+        <i data-lucide="smartphone"></i>
+      </div>
+      <h5 class="highlight-item-title">Responsive</h5>
+      <p class="highlight-item-desc">Hoạt động tốt trên mọi thiết bị</p>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-item-icon">
+        <i data-lucide="trending-up"></i>
+      </div>
+      <h5 class="highlight-item-title">Thống kê</h5>
+      <p class="highlight-item-desc">Báo cáo chi tiết, trực quan</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Initialize icons after content loads
+  lucide.createIcons();
+
+  // Add loading animation for stat cards
+  document.addEventListener('DOMContentLoaded', function () {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, index * 100);
+    });
+  });
+</script>
+{% endblock %}

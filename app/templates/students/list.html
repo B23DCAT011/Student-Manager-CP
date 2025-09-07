@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block title %}Danh sách sinh viên{% endblock %}
+
+{% block content %}
+<style>
+  /* Icon alignment fixes */
+  .page-title i,
+  .filter-input i,
+  .action-btn i,
+  .btn i,
+  .status-badge i {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .page-title i {
+    width: 32px;
+    height: 32px;
+  }
+
+  .filter-input i,
+  .action-btn i,
+  .btn i,
+  .status-badge i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .students-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .filter-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .filter-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .filter-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .filter-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    align-items: end;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .form-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+  }
+
+  .form-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .students-table-container {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .students-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .students-table th {
+    background: var(--bg-tertiary);
+    padding: var(--spacing-md);
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+
+  .students-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .students-table tbody tr {
+    transition: all 0.2s ease;
+  }
+
+  .students-table tbody tr:hover {
+    background: var(--bg-secondary);
+  }
+
+  .student-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .student-name {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .student-class {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .student-gender {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .gender-male {
+    background: var(--info-light);
+    color: var(--info);
+  }
+
+  .gender-female {
+    background: #fce7f3;
+    color: #be185d;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+  }
+
+  .btn-sm {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .delete-form {
+    display: inline;
+  }
+
+  .stats-footer {
+    background: var(--bg-secondary);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .no-students {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .no-students-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+  }
+
+  .no-students h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .no-students p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      justify-content: center;
+    }
+
+    .filter-form {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+      justify-content: center;
+    }
+
+    .students-table-container {
+      overflow-x: auto;
+    }
+
+    .students-table {
+      min-width: 600px;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="students-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2 class="page-title">
+      <i data-lucide="users"></i>
+      Danh sách sinh viên
+    </h2>
+    <a href="/students/add" class="btn btn-success">
+      <i data-lucide="plus"></i>
+      Thêm sinh viên mới
+    </a>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-header">
+      <div class="filter-icon">
+        <i data-lucide="search"></i>
+      </div>
+      <h4 class="filter-title">Bộ lọc tìm kiếm</h4>
+    </div>
+
+    <form method="GET" action="/students/list" class="filter-form">
+      <!-- Mã sinh viên -->
+      <div class="form-group">
+        <label for="ma_sv" class="form-label">
+          <i data-lucide="id-card"></i>
+          Mã sinh viên
+        </label>
+        <input type="text" id="ma_sv" name="ma_sv" value="{{ request.args.get('ma_sv', '') }}"
+          placeholder="Nhập mã sinh viên..." class="form-input">
+      </div>
+
+      <!-- Tên sinh viên -->
+      <div class="form-group">
+        <label for="ho_ten" class="form-label">
+          <i data-lucide="user"></i>
+          Tên sinh viên
+        </label>
+        <input type="text" id="ho_ten" name="ho_ten" value="{{ request.args.get('ho_ten', '') }}"
+          placeholder="Nhập tên sinh viên..." class="form-input">
+      </div>
+
+      <!-- Mã lớp -->
+      <div class="form-group">
+        <label for="ma_lop" class="form-label">
+          <i data-lucide="users-2"></i>
+          Mã lớp
+        </label>
+        <input type="text" id="ma_lop" name="ma_lop" value="{{ request.args.get('ma_lop', '') }}"
+          placeholder="Nhập mã lớp..." class="form-input">
+      </div>
+
+      <!-- Actions -->
+      <div class="filter-actions">
+        <button type="submit" class="btn btn-primary">
+          <i data-lucide="search"></i>
+          Tìm kiếm
+        </button>
+        <a href="/students/list" class="btn btn-outline">
+          <i data-lucide="refresh-cw"></i>
+          Làm mới
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Students Table -->
+  {% if students %}
+  <div class="students-table-container">
+    <table class="students-table">
+      <thead>
+        <tr>
+          <th>
+            <i data-lucide="id-card"></i>
+            Mã SV
+          </th>
+          <th>
+            <i data-lucide="user"></i>
+            Họ tên
+          </th>
+          <th>
+            <i data-lucide="users-2"></i>
+            Lớp
+          </th>
+          <th>
+            <i data-lucide="user-check"></i>
+            Giới tính
+          </th>
+          <th>
+            <i data-lucide="calendar"></i>
+            Ngày sinh
+          </th>
+          <th>
+            <i data-lucide="map-pin"></i>
+            Địa chỉ
+          </th>
+          <th style="text-align: center;">
+            <i data-lucide="settings"></i>
+            Hành động
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td>
+            <span class="student-id">{{ student.ma_sv }}</span>
+          </td>
+          <td>
+            <span class="student-name">{{ student.ho_ten }}</span>
+          </td>
+          <td>
+            <span class="student-class">{{ student.ma_lop }}</span>
+          </td>
+          <td>
+            <span
+              class="student-gender {% if student.gioi_tinh == 'Nam' %}gender-male{% else %}gender-female{% endif %}">
+              {% if student.gioi_tinh == 'Nam' %}
+              <i data-lucide="mars"></i>
+              {% else %}
+              <i data-lucide="venus"></i>
+              {% endif %}
+              {{ student.gioi_tinh }}
+            </span>
+          </td>
+          <td>
+            {% if student.ngay_sinh %}
+            <i data-lucide="calendar"></i>
+            {{ student.ngay_sinh.strftime('%d/%m/%Y') }}
+            {% else %}
+            <span style="color: var(--text-muted);">Chưa cập nhật</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if student.dia_chi %}
+            <i data-lucide="map-pin"></i>
+            {{ student.dia_chi }}
+            {% else %}
+            <span style="color: var(--text-muted);">Chưa cập nhật</span>
+            {% endif %}
+          </td>
+          <td style="text-align: center;">
+            <div class="action-buttons">
+              <a href="/students/{{ student.ma_sv }}/edit" class="btn btn-secondary btn-sm">
+                <i data-lucide="edit-2"></i>
+                Sửa
+              </a>
+              <form method="POST" action="/students/{{ student.ma_sv }}/delete" class="delete-form"
+                onsubmit="return confirm('⚠️ Bạn có chắc chắn muốn xóa sinh viên {{ student.ho_ten }}?')">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i data-lucide="trash-2"></i>
+                  Xóa
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="stats-footer">
+      <i data-lucide="bar-chart-3"></i>
+      <span>Tổng số sinh viên: <strong>{{ students|length }}</strong></span>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="no-students">
+    <div class="no-students-icon">
+      <i data-lucide="user-x"></i>
+    </div>
+    <h3>Chưa có sinh viên nào</h3>
+    <p>Hãy thêm sinh viên đầu tiên của bạn!</p>
+    <a href="/students/add" class="btn btn-success">
+      <i data-lucide="plus"></i>
+      Thêm sinh viên ngay
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  // Initialize icons
+  lucide.createIcons();
+
+  // Add loading animation for table rows
+  document.addEventListener('DOMContentLoaded', function () {
+    const rows = document.querySelectorAll('.students-table tbody tr');
+    rows.forEach((row, index) => {
+      row.style.opacity = '0';
+      row.style.transform = 'translateX(-20px)';
+
+      setTimeout(() => {
+        row.style.transition = 'all 0.4s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateX(0)';
+      }, index * 50);
+    });
+
+    // Enhanced hover effects
+    const actionButtons = document.querySelectorAll('.action-buttons .btn');
+    actionButtons.forEach(btn => {
+      btn.addEventListener('mouseenter', function () {
+        this.style.transform = 'scale(1.05)';
+      });
+
+      btn.addEventListener('mouseleave', function () {
+        this.style.transform = 'scale(1)';
+      });
+    });
+  });
+</script>
+{% endblock %}

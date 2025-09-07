@@ -1,0 +1,553 @@
+{% extends "base.html" %}
+
+{% block title %}Gửi Email Liên Hệ{% endblock %}
+
+{% block content %}
+<style>
+  /* Icon alignment fixes */
+  .page-title i,
+  .form-section-title i,
+  .info-title i,
+  .contact-item i,
+  .btn-send i,
+  .btn-cancel i,
+  .info-list li i {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .page-title i {
+    width: 32px;
+    height: 32px;
+  }
+
+  .form-section-title i,
+  .info-title i {
+    width: 24px;
+    height: 24px;
+  }
+
+  .contact-item i,
+  .btn-send i,
+  .btn-cancel i,
+  .info-list li i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .email-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+
+  .page-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    margin: 0;
+  }
+
+  .email-form-container {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .form-grid {
+    display: grid;
+    gap: var(--spacing-xl);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .form-label .required {
+    color: var(--danger);
+    font-size: 0.875rem;
+  }
+
+  .form-control {
+    padding: var(--spacing-lg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background: var(--bg-primary);
+  }
+
+  .form-control::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  .form-control[type="select"],
+  .form-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+
+  .form-textarea {
+    min-height: 150px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border);
+    margin-top: var(--spacing-lg);
+  }
+
+  .btn-send {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    box-shadow: var(--shadow);
+  }
+
+  .btn-send:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-cancel {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .btn-cancel:hover {
+    background: var(--border);
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .info-section {
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    border: 1px solid var(--border);
+  }
+
+  .info-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .info-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .info-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-md);
+  }
+
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--bg-primary);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .info-item-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .info-item-text {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .info-item-text strong {
+    color: var(--text-primary);
+  }
+
+  .character-count {
+    text-align: right;
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    margin-top: var(--spacing-xs);
+  }
+
+  .character-count.near-limit {
+    color: var(--warning);
+  }
+
+  .character-count.at-limit {
+    color: var(--danger);
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 2rem;
+      flex-direction: column;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .btn-send,
+    .btn-cancel {
+      justify-content: center;
+    }
+
+    .email-form-container {
+      padding: var(--spacing-xl);
+    }
+  }
+</style>
+
+<div class="email-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2 class="page-title">
+      <i data-lucide="mail"></i>
+      Gửi Email Liên Hệ
+    </h2>
+    <p class="page-subtitle">Gửi email tư vấn, hỗ trợ từ giáo viên đến sinh viên</p>
+  </div>
+
+  <!-- Email Form -->
+  <div class="email-form-container">
+    <form method="POST" action="{{ url_for('email.email_contact') }}" id="emailForm">
+      <div class="form-grid">
+        <!-- Sender and Recipient Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="teacher_id" class="form-label">
+              <i data-lucide="user-check"></i>
+              Giáo viên gửi
+              <span class="required">*</span>
+            </label>
+            <select name="teacher_id" id="teacher_id" class="form-control form-select" required>
+              <option value="">-- Chọn giáo viên --</option>
+              {% for teacher in teachers %}
+              <option value="{{ teacher.ma_gv }}">{{ teacher.ho_ten }} ({{ teacher.email }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="student_id" class="form-label">
+              <i data-lucide="user"></i>
+              Sinh viên nhận
+              <span class="required">*</span>
+            </label>
+            <select name="student_id" id="student_id" class="form-control form-select" required>
+              <option value="">-- Chọn sinh viên --</option>
+              {% for student in students %}
+              <option value="{{ student.ma_sv }}">{{ student.ho_ten }} - {{ student.ma_sv }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Subject -->
+        <div class="form-group full-width">
+          <label for="subject" class="form-label">
+            <i data-lucide="type"></i>
+            Tiêu đề email
+            <span class="required">*</span>
+          </label>
+          <input type="text" name="subject" id="subject" class="form-control"
+            placeholder="VD: Tư vấn học tập, Cảnh báo điểm số..." required>
+        </div>
+
+        <!-- Message -->
+        <div class="form-group full-width">
+          <label for="message" class="form-label">
+            <i data-lucide="message-square"></i>
+            Nội dung email
+            <span class="required">*</span>
+          </label>
+          <textarea name="message" id="message" class="form-control form-textarea"
+            placeholder="Nhập nội dung email bạn muốn gửi đến sinh viên..." required maxlength="2000"></textarea>
+          <div class="character-count">
+            <span id="charCount">0</span>/2000 ký tự
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="submit" class="btn-send">
+            <i data-lucide="send"></i>
+            Gửi Email
+          </button>
+          <a href="{{ url_for('grades.dashboard') }}" class="btn-cancel">
+            <i data-lucide="x"></i>
+            Hủy
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Info Section -->
+  <div class="info-section">
+    <div class="info-header">
+      <div class="info-icon">
+        <i data-lucide="info"></i>
+      </div>
+      <h4 class="info-title">Lưu ý quan trọng</h4>
+    </div>
+
+    <ul class="info-list">
+      <li class="info-item">
+        <div class="info-item-icon">
+          <i data-lucide="mail"></i>
+        </div>
+        <p class="info-item-text">
+          Email sẽ được gửi đến địa chỉ test: <strong>ducanhyeutoan@gmail.com</strong>
+        </p>
+      </li>
+
+      <li class="info-item">
+        <div class="info-item-icon">
+          <i data-lucide="user"></i>
+        </div>
+        <p class="info-item-text">
+          Nội dung email sẽ bao gồm thông tin giáo viên gửi và thông tin sinh viên nhận
+        </p>
+      </li>
+
+      <li class="info-item">
+        <div class="info-item-icon">
+          <i data-lucide="edit-3"></i>
+        </div>
+        <p class="info-item-text">
+          Hãy viết nội dung rõ ràng, lịch sự và hữu ích để tạo hiệu quả tốt nhất
+        </p>
+      </li>
+
+      <li class="info-item">
+        <div class="info-item-icon">
+          <i data-lucide="clock"></i>
+        </div>
+        <p class="info-item-text">
+          Email sẽ được gửi ngay lập tức sau khi bạn nhấn nút "Gửi Email"
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Initialize icons
+  lucide.createIcons();
+
+  // Character count for message
+  const messageTextarea = document.getElementById('message');
+  const charCount = document.getElementById('charCount');
+
+  function updateCharCount() {
+    const count = messageTextarea.value.length;
+    charCount.textContent = count;
+
+    const countDisplay = charCount.parentElement;
+    countDisplay.className = 'character-count';
+
+    if (count > 1800) {
+      countDisplay.classList.add('at-limit');
+    } else if (count > 1500) {
+      countDisplay.classList.add('near-limit');
+    }
+  }
+
+  messageTextarea.addEventListener('input', updateCharCount);
+
+  // Auto-resize textarea
+  messageTextarea.addEventListener('input', function () {
+    this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
+  });
+
+  // Form validation and submission
+  document.getElementById('emailForm').addEventListener('submit', function (e) {
+    const teacherId = document.getElementById('teacher_id').value;
+    const studentId = document.getElementById('student_id').value;
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    // Validation
+    if (!teacherId || !studentId || !subject || !message) {
+      e.preventDefault();
+      alert('⚠️ Vui lòng điền đầy đủ tất cả thông tin bắt buộc!');
+      return false;
+    }
+
+    if (message.length < 10) {
+      e.preventDefault();
+      alert('⚠️ Nội dung email quá ngắn! Vui lòng viết ít nhất 10 ký tự.');
+      return false;
+    }
+
+    if (subject.length < 5) {
+      e.preventDefault();
+      alert('⚠️ Tiêu đề email quá ngắn! Vui lòng viết ít nhất 5 ký tự.');
+      return false;
+    }
+
+    // Confirmation
+    const teacherName = document.querySelector('#teacher_id option:checked').textContent;
+    const studentName = document.querySelector('#student_id option:checked').textContent;
+
+    const confirmMessage = `📧 Xác nhận gửi email:
+    
+Từ: ${teacherName}
+Đến: ${studentName}
+Tiêu đề: "${subject}"
+
+Bạn có chắc chắn muốn gửi email này không?`;
+
+    if (!confirm(confirmMessage)) {
+      e.preventDefault();
+      return false;
+    }
+
+    // Show loading state
+    const submitBtn = this.querySelector('.btn-send');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i data-lucide="loader-2"></i> Đang gửi...';
+    submitBtn.disabled = true;
+
+    // Re-initialize icons for the loader
+    lucide.createIcons();
+
+    return true;
+  });
+
+  // Initialize character count
+  updateCharCount();
+
+  // Add loading animation for form
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('.email-form-container');
+    const info = document.querySelector('.info-section');
+
+    [form, info].forEach((element, index) => {
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        element.style.transition = 'all 0.6s ease';
+        element.style.opacity = '1';
+        element.style.transform = 'translateY(0)';
+      }, index * 200);
+    });
+  });
+</script>
+{% endblock %}

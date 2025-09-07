@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý học thuật{% endblock %}
+
+{% block content %}
+<style>
+  /* Icon alignment fixes */
+  .page-title i,
+  .stat-icon i,
+  .guide-icon i,
+  .guide-item-icon i,
+  .stat-action i {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .page-title i {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stat-icon i {
+    width: 32px;
+    height: 32px;
+  }
+
+  .guide-icon i {
+    width: 20px;
+    height: 20px;
+  }
+
+  .guide-item-icon i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .stat-action i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .academics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+
+  .page-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    margin: 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .stat-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--card-accent, var(--primary));
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .stat-card.primary {
+    --card-accent: var(--primary);
+  }
+
+  .stat-card.success {
+    --card-accent: var(--success);
+  }
+
+  .stat-card.warning {
+    --card-accent: var(--warning);
+  }
+
+  .stat-card.danger {
+    --card-accent: var(--danger);
+  }
+
+  .stat-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--card-accent, var(--primary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+  }
+
+  .stat-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  .stat-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--card-accent, var(--primary));
+    margin: 0 0 var(--spacing-sm) 0;
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0 0 var(--spacing-lg) 0;
+  }
+
+  .stat-action {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--card-accent, var(--primary));
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .stat-action:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    color: white;
+  }
+
+  .guide-section {
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .guide-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .guide-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .guide-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .guide-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-md);
+  }
+
+  .guide-item {
+    background: var(--bg-primary);
+    border-radius: var(--radius);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+
+  .guide-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+  }
+
+  .guide-item-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .guide-item-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: white;
+  }
+
+  .guide-item-icon.primary {
+    background: var(--primary);
+  }
+
+  .guide-item-icon.success {
+    background: var(--success);
+  }
+
+  .guide-item-icon.warning {
+    background: var(--warning);
+  }
+
+  .guide-item-icon.danger {
+    background: var(--danger);
+  }
+
+  .guide-item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .guide-item-desc {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 2rem;
+      flex-direction: column;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+
+    .stat-card {
+      padding: var(--spacing-xl);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+    }
+
+    .guide-section {
+      padding: var(--spacing-xl);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="academics-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2 class="page-title">
+      <i data-lucide="building"></i>
+      Quản lý học thuật
+    </h2>
+    <p class="page-subtitle">Khoa - Ngành - Lớp - Học phần</p>
+  </div>
+
+  <!-- Statistics Grid -->
+  <div class="stats-grid">
+    <!-- Khoa -->
+    <div class="stat-card primary">
+      <div class="stat-icon">
+        <i data-lucide="building" size="32"></i>
+      </div>
+      <h3 class="stat-title">Khoa</h3>
+      <p class="stat-value">{{ khoa_count }}</p>
+      <p class="stat-label">Khoa/Viện</p>
+      <a href="/academics/khoa/list" class="stat-action">
+        <i data-lucide="eye"></i>
+        Xem danh sách
+      </a>
+    </div>
+
+    <!-- Ngành -->
+    <div class="stat-card success">
+      <div class="stat-icon">
+        <i data-lucide="graduation-cap" size="32"></i>
+      </div>
+      <h3 class="stat-title">Ngành</h3>
+      <p class="stat-value">{{ nganh_count }}</p>
+      <p class="stat-label">Chuyên ngành</p>
+      <a href="/academics/nganh/list" class="stat-action">
+        <i data-lucide="eye"></i>
+        Xem danh sách
+      </a>
+    </div>
+
+    <!-- Lớp -->
+    <div class="stat-card warning">
+      <div class="stat-icon">
+        <i data-lucide="users" size="32"></i>
+      </div>
+      <h3 class="stat-title">Lớp</h3>
+      <p class="stat-value">{{ lop_count }}</p>
+      <p class="stat-label">Lớp học</p>
+      <a href="/academics/lop/list" class="stat-action">
+        <i data-lucide="eye"></i>
+        Xem danh sách
+      </a>
+    </div>
+
+    <!-- Học phần -->
+    <div class="stat-card danger">
+      <div class="stat-icon">
+        <i data-lucide="book-open" size="32"></i>
+      </div>
+      <h3 class="stat-title">Học phần</h3>
+      <p class="stat-value">{{ hocphan_count }}</p>
+      <p class="stat-label">Môn học</p>
+      <a href="/academics/hocphan/list" class="stat-action">
+        <i data-lucide="eye"></i>
+        Xem danh sách
+      </a>
+    </div>
+  </div>
+
+  <!-- Guide Section -->
+  <div class="guide-section">
+    <div class="guide-header">
+      <div class="guide-icon">
+        <i data-lucide="help-circle"></i>
+      </div>
+      <h4 class="guide-title">Hướng dẫn sử dụng</h4>
+    </div>
+
+    <ul class="guide-list">
+      <li class="guide-item">
+        <div class="guide-item-header">
+          <div class="guide-item-icon primary">
+            <i data-lucide="building"></i>
+          </div>
+          <h5 class="guide-item-title">Khoa</h5>
+        </div>
+        <p class="guide-item-desc">
+          Các khoa/viện trong trường (VD: Khoa CNTT, Khoa Kinh tế...).
+          Đây là đơn vị tổ chức cao nhất trong cấu trúc học thuật.
+        </p>
+      </li>
+
+      <li class="guide-item">
+        <div class="guide-item-header">
+          <div class="guide-item-icon success">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <h5 class="guide-item-title">Ngành</h5>
+        </div>
+        <p class="guide-item-desc">
+          Các chuyên ngành thuộc từng khoa (VD: Công nghệ thông tin, Kế toán...).
+          Mỗi ngành có chương trình đào tạo riêng biệt.
+        </p>
+      </li>
+
+      <li class="guide-item">
+        <div class="guide-item-header">
+          <div class="guide-item-icon warning">
+            <i data-lucide="users"></i>
+          </div>
+          <h5 class="guide-item-title">Lớp</h5>
+        </div>
+        <p class="guide-item-desc">
+          Các lớp học cụ thể (VD: CNTT01, KT02...).
+          Sinh viên được phân vào các lớp để quản lý và tổ chức học tập.
+        </p>
+      </li>
+
+      <li class="guide-item">
+        <div class="guide-item-header">
+          <div class="guide-item-icon danger">
+            <i data-lucide="book-open"></i>
+          </div>
+          <h5 class="guide-item-title">Học phần</h5>
+        </div>
+        <p class="guide-item-desc">
+          Các môn học/học phần (VD: Toán cao cấp, Lập trình C++...).
+          Đây là đơn vị nhỏ nhất trong chương trình đào tạo.
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Initialize icons
+  lucide.createIcons();
+
+  // Add loading animation for cards
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.stat-card, .guide-section');
+    cards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, index * 150);
+    });
+  });
+</script>
+{% endblock %}

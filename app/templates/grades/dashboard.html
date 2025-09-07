@@ -1,0 +1,621 @@
+{% e{% block content %}
+<style>
+  /* Icon alignment fixes */
+  .page-title i,
+  .stat-icon i,
+  .action-icon i,
+  .quick-action i,
+  .subject-attention-icon i {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .page-title i {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stat-icon i {
+    width: 24px;
+    height: 24px;
+  }
+
+  .action-icon i,
+  .quick-action i,
+  .subject-attention-icon i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  "base.html" %
+  }
+
+    {
+    % block title %
+  }
+
+  Dashboard Quản lý Điểm {
+    % endblock %
+  }
+
+    {
+    % block content %
+  }
+
+  <style>.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+
+  .dashboard-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    margin: 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .stat-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--card-accent, var(--primary));
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .stat-card.primary {
+    --card-accent: var(--primary);
+  }
+
+  .stat-card.success {
+    --card-accent: var(--success);
+  }
+
+  .stat-card.warning {
+    --card-accent: var(--warning);
+  }
+
+  .stat-card.danger {
+    --card-accent: var(--danger);
+  }
+
+  .stat-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    background: var(--card-accent, var(--primary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .stat-content {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .stat-item:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .stat-value {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .stat-link {
+    color: var(--card-accent, var(--primary));
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    transition: all 0.2s ease;
+  }
+
+  .stat-link:hover {
+    opacity: 0.8;
+  }
+
+  .actions-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .actions-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .actions-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .actions-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .action-button {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius);
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 500;
+  }
+
+  .action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .action-button.primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .action-button.primary:hover {
+    background: var(--primary-hover);
+    color: white;
+  }
+
+  .action-button.success {
+    background: var(--success);
+    color: white;
+  }
+
+  .action-button.success:hover {
+    background: #059669;
+    color: white;
+  }
+
+  .action-button.danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  .action-button.danger:hover {
+    background: #dc2626;
+    color: white;
+  }
+
+  .action-button.secondary {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .action-button.secondary:hover {
+    background: #475569;
+    color: white;
+  }
+
+  .subjects-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .subjects-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .subjects-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--warning);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .subjects-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .subjects-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .subjects-table th {
+    background: var(--bg-tertiary);
+    padding: var(--spacing-md);
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .subjects-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .subjects-table tbody tr:hover {
+    background: var(--bg-secondary);
+  }
+
+  .grade-score {
+    font-weight: 700;
+    color: var(--danger);
+  }
+
+  .status-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--danger-light);
+    color: var(--danger);
+  }
+
+  .no-issues {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--success);
+    background: var(--success-light);
+    border-radius: var(--radius);
+    margin-top: var(--spacing-md);
+  }
+
+  .no-issues-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--success);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-title {
+      font-size: 2rem;
+      flex-direction: column;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .actions-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .subjects-table {
+      font-size: 0.875rem;
+    }
+
+    .subjects-table th,
+    .subjects-table td {
+      padding: var(--spacing-sm);
+    }
+  }
+</style>
+
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h2 class="dashboard-title">
+      <i data-lucide="bar-chart-3"></i>
+      Dashboard Quản lý Điểm
+    </h2>
+    <p class="dashboard-subtitle">Tổng quan về tình hình học tập và điểm số sinh viên</p>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <!-- Overview Card -->
+    <div class="stat-card primary">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i data-lucide="users"></i>
+        </div>
+        <h4 class="stat-title">Tổng quan</h4>
+      </div>
+      <div class="stat-content">
+        <div class="stat-item">
+          <span class="stat-label">Sinh viên</span>
+          <span class="stat-value">{{ data.total_students or 0 }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Môn học</span>
+          <span class="stat-value">{{ data.total_subjects or 0 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Component Grades Card -->
+    <div class="stat-card success">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i data-lucide="clipboard-list"></i>
+        </div>
+        <h4 class="stat-title">Điểm Thành phần</h4>
+      </div>
+      <div class="stat-content">
+        <div class="stat-item">
+          <span class="stat-label">Đã nhập</span>
+          <span class="stat-value">{{ data.thanh_phan_count or 0 }} bản ghi</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Tỷ lệ hoàn thành</span>
+          <span class="stat-value">{{ data.thanh_phan_completion or 0 }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Grades Card -->
+    <div class="stat-card warning">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i data-lucide="target"></i>
+        </div>
+        <h4 class="stat-title">Điểm Cuối kỳ</h4>
+      </div>
+      <div class="stat-content">
+        <div class="stat-item">
+          <span class="stat-label">Đã nhập</span>
+          <span class="stat-value">{{ data.cuoi_ky_count or 0 }} bản ghi</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Tỷ lệ hoàn thành</span>
+          <span class="stat-value">{{ data.cuoi_ky_completion or 0 }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts Card -->
+    <div class="stat-card danger">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <h4 class="stat-title">Cảnh báo</h4>
+      </div>
+      <div class="stat-content">
+        <div class="stat-item">
+          <span class="stat-label">Sinh viên high-risk</span>
+          <span class="stat-value">{{ data.high_risk_count or 0 }}</span>
+        </div>
+      </div>
+      <a href="{{ url_for('grades.high_risk_students') }}" class="stat-link">
+        <i data-lucide="arrow-right"></i>
+        Xem chi tiết
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="actions-section">
+    <div class="actions-header">
+      <div class="actions-icon">
+        <i data-lucide="zap"></i>
+      </div>
+      <h3 class="actions-title">Chức năng chính</h3>
+    </div>
+    <div class="actions-grid">
+      <a href="{{ url_for('grades.list_thanh_phan') }}" class="action-button primary">
+        <i data-lucide="clipboard-list" size="24"></i>
+        <span>Quản lý Điểm Thành phần</span>
+      </a>
+      <a href="{{ url_for('grades.list_cuoi_ky') }}" class="action-button success">
+        <i data-lucide="target" size="24"></i>
+        <span>Quản lý Điểm Cuối kỳ</span>
+      </a>
+      <a href="{{ url_for('grades.high_risk_students') }}" class="action-button danger">
+        <i data-lucide="alert-triangle" size="24"></i>
+        <span>Sinh viên High-risk</span>
+      </a>
+      <a href="#" class="action-button secondary">
+        <i data-lucide="bar-chart-3" size="24"></i>
+        <span>Báo cáo & Thống kê</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Subjects Need Attention -->
+  {% if data.user_role in ['admin', 'teacher'] %}
+  <div class="subjects-section">
+    <div class="subjects-header">
+      <div class="subjects-icon">
+        <i data-lucide="alert-circle"></i>
+      </div>
+      <h3 class="subjects-title">Môn học cần chú ý (Điểm TB < 5.0)</h3>
+    </div>
+
+    {% if data.subjects_need_attention %}
+    <div style="overflow-x: auto;">
+      <table class="subjects-table">
+        <thead>
+          <tr>
+            <th>
+              <i data-lucide="book"></i>
+              Môn học
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="trending-down"></i>
+              Điểm TB
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="users"></i>
+              Số SV
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="flag"></i>
+              Trạng thái
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for subject in data.subjects_need_attention %}
+          <tr>
+            <td>
+              <strong>{{ subject.ten_hp }}</strong>
+            </td>
+            <td style="text-align: center;">
+              <span class="grade-score">{{ "%.1f"|format(subject.avg_grade) }}</span>
+            </td>
+            <td style="text-align: center;">
+              {{ subject.total_students }}
+            </td>
+            <td style="text-align: center;">
+              <span class="status-badge">
+                <i data-lucide="alert-triangle" size="12"></i>
+                Cần can thiệp
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="no-issues">
+      <div class="no-issues-icon">
+        <i data-lucide="check-circle"></i>
+      </div>
+      <h4>Tuyệt vời!</h4>
+      <p>Tất cả môn học đều có điểm trung bình ≥ 5.0</p>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  // Initialize icons
+  lucide.createIcons();
+
+  // Add loading animation for cards
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.stat-card, .actions-section, .subjects-section');
+    cards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, index * 100);
+    });
+  });
+</script>
+{% endblock %}

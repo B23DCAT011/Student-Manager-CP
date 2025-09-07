@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+
+{% block title %}Portal Sinh viên - {{ data.student.ho_ten }}{% endblock %}
+
+{% block content %}
+<style>
+  /* Icon alignment fixes */
+  .stat-icon i,
+  .student-info i,
+  .alert-item i,
+  .grade-row i {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .student-portal {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+    color: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-2xl);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(50px, -50px);
+  }
+
+  .hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .student-info h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-sm) 0;
+  }
+
+  .student-info h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-sm) 0;
+    opacity: 0.9;
+  }
+
+  .student-meta {
+    opacity: 0.8;
+    font-size: 1rem;
+  }
+
+  .gpa-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .gpa-label {
+    font-size: 1rem;
+    margin: 0 0 var(--spacing-sm) 0;
+    opacity: 0.9;
+  }
+
+  .gpa-value {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .gpa-rank {
+    font-size: 0.875rem;
+    margin: var(--spacing-sm) 0 0 0;
+    font-weight: 600;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .stat-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-card.primary {
+    border-left: 4px solid var(--primary);
+  }
+
+  .stat-card.success {
+    border-left: 4px solid var(--success);
+  }
+
+  .stat-card.danger {
+    border-left: 4px solid var(--danger);
+  }
+
+  .stat-card.warning {
+    border-left: 4px solid var(--warning);
+  }
+
+  .stat-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--text-secondary);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .stat-value.primary {
+    color: var(--primary);
+  }
+
+  .stat-value.success {
+    color: var(--success);
+  }
+
+  .stat-value.danger {
+    color: var(--danger);
+  }
+
+  .stat-value.warning {
+    color: var(--warning);
+  }
+
+  .grades-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .grades-table th {
+    background: var(--bg-tertiary);
+    padding: var(--spacing-md);
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .grades-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .grades-table tbody tr:hover {
+    background: var(--bg-secondary);
+  }
+
+  .grade-score {
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .grade-score.excellent {
+    color: var(--success);
+  }
+
+  .grade-score.good {
+    color: var(--primary);
+  }
+
+  .grade-score.average {
+    color: var(--warning);
+  }
+
+  .grade-score.poor {
+    color: var(--danger);
+  }
+
+  .grade-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .grade-badge.pass {
+    background: var(--success-light);
+    color: var(--success);
+  }
+
+  .grade-badge.fail {
+    background: var(--danger-light);
+    color: var(--danger);
+  }
+
+  .grade-letter {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-muted);
+  }
+
+  .no-data-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+  }
+
+  .footer-actions {
+    text-align: center;
+    margin-top: var(--spacing-2xl);
+    padding: var(--spacing-xl);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .hero-content {
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .student-info h2 {
+      font-size: 1.5rem;
+    }
+
+    .gpa-value {
+      font-size: 2.5rem;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grades-table {
+      font-size: 0.875rem;
+    }
+
+    .grades-table th,
+    .grades-table td {
+      padding: var(--spacing-sm);
+    }
+  }
+</style>
+
+<div class="student-portal">
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <div class="student-info">
+        <h2>
+          <i data-lucide="graduation-cap"></i>
+          Portal Sinh viên
+        </h2>
+        <h3>{{ data.student.ho_ten }}</h3>
+        <div class="student-meta">
+          <i data-lucide="id-card"></i>
+          Mã SV: {{ data.student.ma_sv }} |
+          <i data-lucide="users"></i>
+          Lớp: {{ data.student.lop.ten_lop if data.student.lop else 'N/A' }}
+        </div>
+      </div>
+      <div class="gpa-card">
+        <h4 class="gpa-label">GPA</h4>
+        <p class="gpa-value">{{ "%.2f"|format(data.gpa) }}</p>
+        <p class="gpa-rank" style="color: {{ data.rank_color }};">{{ data.rank }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Grid -->
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <h4 class="stat-title">
+        <i data-lucide="book-open"></i>
+        Tổng môn học
+      </h4>
+      <p class="stat-value primary">{{ data.total_subjects }}</p>
+    </div>
+
+    <div class="stat-card success">
+      <h4 class="stat-title">
+        <i data-lucide="check-circle"></i>
+        Môn đạt
+      </h4>
+      <p class="stat-value success">{{ data.passed_subjects }}</p>
+    </div>
+
+    <div class="stat-card danger">
+      <h4 class="stat-title">
+        <i data-lucide="x-circle"></i>
+        Môn trượt
+      </h4>
+      <p class="stat-value danger">{{ data.failed_subjects }}</p>
+    </div>
+
+    <div class="stat-card warning">
+      <h4 class="stat-title">
+        <i data-lucide="award"></i>
+        Xếp loại
+      </h4>
+      <p class="stat-value warning" style="color: {{ data.rank_color }}; font-size: 1.25rem;">{{ data.rank }}</p>
+    </div>
+  </div>
+
+  <!-- Final Grades Section -->
+  <div class="grades-section">
+    <div class="section-header">
+      <div class="section-icon">
+        <i data-lucide="bar-chart-3"></i>
+      </div>
+      <h3 class="section-title">Điểm cuối kỳ</h3>
+    </div>
+
+    {% if data.final_grades %}
+    <div style="overflow-x: auto;">
+      <table class="grades-table">
+        <thead>
+          <tr>
+            <th>
+              <i data-lucide="book"></i>
+              Môn học
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="hash"></i>
+              Mã HP
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="trending-up"></i>
+              Điểm
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="check-circle-2"></i>
+              Kết quả
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="star"></i>
+              Xếp loại
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for grade in data.final_grades %}
+          <tr>
+            <td>
+              <strong>{{ grade.hocphan.ten_hp if grade.hocphan else 'N/A' }}</strong>
+            </td>
+            <td style="text-align: center;">
+              <code>{{ grade.ma_hp }}</code>
+            </td>
+            <td style="text-align: center;">
+              <span class="grade-score 
+                {% if grade.diem_hp >= 8.5 %}excellent
+                {% elif grade.diem_hp >= 7.0 %}good
+                {% elif grade.diem_hp >= 5.0 %}average
+                {% else %}poor{% endif %}">
+                {{ grade.diem_hp }}
+              </span>
+            </td>
+            <td style="text-align: center;">
+              {% if grade.diem_hp >= 5.0 %}
+              <span class="grade-badge pass">
+                <i data-lucide="check"></i> Đạt
+              </span>
+              {% else %}
+              <span class="grade-badge fail">
+                <i data-lucide="x"></i> Trượt
+              </span>
+              {% endif %}
+            </td>
+            <td style="text-align: center;">
+              <span class="grade-letter 
+                {% if grade.diem_hp >= 8.5 %}excellent
+                {% elif grade.diem_hp >= 7.0 %}good
+                {% elif grade.diem_hp >= 5.0 %}average
+                {% else %}poor{% endif %}">
+                {% if grade.diem_hp >= 8.5 %}A
+                {% elif grade.diem_hp >= 7.0 %}B
+                {% elif grade.diem_hp >= 5.5 %}C
+                {% elif grade.diem_hp >= 4.0 %}D
+                {% else %}F{% endif %}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="no-data">
+      <div class="no-data-icon">
+        <i data-lucide="file-text"></i>
+      </div>
+      <h4>Chưa có điểm cuối kỳ</h4>
+      <p>Điểm cuối kỳ sẽ được cập nhật sau khi giáo viên nhập điểm.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Component Grades Section -->
+  <div class="grades-section">
+    <div class="section-header">
+      <div class="section-icon">
+        <i data-lucide="clipboard-list"></i>
+      </div>
+      <h3 class="section-title">Điểm thành phần</h3>
+    </div>
+
+    {% if data.component_grades %}
+    <div style="overflow-x: auto;">
+      <table class="grades-table">
+        <thead>
+          <tr>
+            <th>
+              <i data-lucide="book"></i>
+              Môn học
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="user-check"></i>
+              Chuyên cần
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="file-text"></i>
+              Bài tập
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="clock"></i>
+              Giữa kỳ
+            </th>
+            <th style="text-align: center;">
+              <i data-lucide="calculator"></i>
+              Trung bình
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for grade in data.component_grades %}
+          <tr>
+            <td>
+              <strong>{{ grade.hocphan.ten_hp if grade.hocphan else 'N/A' }}</strong>
+            </td>
+            <td style="text-align: center;">
+              {% if grade.diem_chuyen_can %}
+              <span class="grade-score {% if grade.diem_chuyen_can >= 5.0 %}good{% else %}poor{% endif %}">
+                {{ grade.diem_chuyen_can }}
+              </span>
+              {% else %}
+              <span style="color: var(--text-muted);">--</span>
+              {% endif %}
+            </td>
+            <td style="text-align: center;">
+              {% if grade.diem_bai_tap %}
+              <span class="grade-score {% if grade.diem_bai_tap >= 5.0 %}good{% else %}poor{% endif %}">
+                {{ grade.diem_bai_tap }}
+              </span>
+              {% else %}
+              <span style="color: var(--text-muted);">--</span>
+              {% endif %}
+            </td>
+            <td style="text-align: center;">
+              {% if grade.diem_giua_ky %}
+              <span class="grade-score {% if grade.diem_giua_ky >= 5.0 %}good{% else %}poor{% endif %}">
+                {{ grade.diem_giua_ky }}
+              </span>
+              {% else %}
+              <span style="color: var(--text-muted);">--</span>
+              {% endif %}
+            </td>
+            <td style="text-align: center;">
+              {% set avg_score = [] %}
+              {% if grade.diem_chuyen_can %}{% set _ = avg_score.append(grade.diem_chuyen_can) %}{% endif %}
+              {% if grade.diem_bai_tap %}{% set _ = avg_score.append(grade.diem_bai_tap) %}{% endif %}
+              {% if grade.diem_giua_ky %}{% set _ = avg_score.append(grade.diem_giua_ky) %}{% endif %}
+
+              {% if avg_score %}
+              {% set average = (avg_score | sum) / (avg_score | length) %}
+              <span class="grade-score {% if average >= 5.0 %}good{% else %}poor{% endif %}">
+                {{ "%.1f"|format(average) }}
+              </span>
+              {% else %}
+              <span style="color: var(--text-muted);">--</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="no-data">
+      <div class="no-data-icon">
+        <i data-lucide="clipboard"></i>
+      </div>
+      <h4>Chưa có điểm thành phần</h4>
+      <p>Điểm thành phần sẽ được cập nhật trong quá trình học tập.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="footer-actions">
+    <a href="{{ url_for('chatbot.process') }}" class="btn btn-primary" style="margin-right: var(--spacing-md);">
+      <i data-lucide="bot"></i>
+      Chat với AI Assistant
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">
+      <i data-lucide="log-out"></i>
+      Đăng xuất
+    </a>
+  </div>
+</div>
+
+<script>
+  // Initialize icons
+  lucide.createIcons();
+
+  // Add loading animation for cards
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.stat-card, .grades-section');
+    cards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, index * 150);
+    });
+  });
+</script>
+{% endblock %}

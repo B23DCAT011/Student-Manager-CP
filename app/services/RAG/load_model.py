@@ -102,7 +102,7 @@ def load_model():
         print(f"Error loading model: {e}")
         return None
 
-# Test function
+
 def response(query):
     """Test RAG functionality"""
     chain = load_model()

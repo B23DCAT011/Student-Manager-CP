@@ -28,3 +28,7 @@ class User(UserMixin, db.Model):
     def get_id(self):
         """Required by Flask-Login"""
         return str(self.user_id)
+
+    @property
+    def id(self):
+        return self.user_id

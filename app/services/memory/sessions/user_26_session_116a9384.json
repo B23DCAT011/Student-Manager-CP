@@ -1,0 +1,58 @@
+{
+  "session_id": "116a9384",
+  "user_id": "26",
+  "created_at": "2025-09-10T13:49:40.978134",
+  "last_updated": "2025-09-10T13:50:52.925238",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Xin chào tôi tên là Nguyễn Văn Anh",
+      "timestamp": "2025-09-10T13:49:40.978134"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn Nguyễn Văn Anh. Rất vui được làm quen với bạn. Bạn có câu hỏi nào về Học viện Công nghệ Bưu chính Viễn thông không? Tôi sẽ cố gắng hỗ trợ bạn tốt nhất có thể.\n",
+      "timestamp": "2025-09-10T13:49:42.208148"
+    },
+    {
+      "role": "user",
+      "content": "Bạn có nhớ tôi tên gì không",
+      "timestamp": "2025-09-10T13:49:55.907987"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn Nguyễn Văn Anh, tôi nhớ bạn chứ. Rất vui khi được tiếp tục trò chuyện với bạn. Bạn có câu hỏi nào khác về Học viện Công nghệ Bưu chính Viễn thông không?\n",
+      "timestamp": "2025-09-10T13:49:57.008633"
+    },
+    {
+      "role": "user",
+      "content": "Trường có bao nhiêu sinh viên theo học",
+      "timestamp": "2025-09-10T13:50:22.491519"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn Nguyễn Văn Anh, rất tiếc là tôi không tìm thấy thông tin chính xác về tổng số sinh viên của Học viện Công nghệ Bưu chính Viễn thông trong dữ liệu hiện tại. Tuy nhiên, bạn có thể tìm thông tin này trên website chính thức của trường hoặc liên hệ trực tiếp với phòng đào tạo của trường để được cung cấp thông tin chi tiết nhé.\n",
+      "timestamp": "2025-09-10T13:50:23.887387"
+    },
+    {
+      "role": "user",
+      "content": "Vậy số giáo sư là bao nhiêu",
+      "timestamp": "2025-09-10T13:50:38.609478"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn Nguyễn Văn Anh, theo thông tin tôi tìm được, Học viện Công nghệ Bưu chính Viễn thông hiện có khoảng 650 giảng viên cơ hữu, trong đó có 10 Giáo sư. Ngoài ra còn có 45 Phó Giáo sư và 180 Tiến sĩ bạn nhé.\n",
+      "timestamp": "2025-09-10T13:50:40.125090"
+    },
+    {
+      "role": "user",
+      "content": "Bye!",
+      "timestamp": "2025-09-10T13:50:51.408479"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn Nguyễn Văn Anh, rất vui được hỗ trợ bạn. Nếu bạn có bất kỳ câu hỏi nào khác về Học viện Công nghệ Bưu chính Viễn thông trong tương lai, đừng ngần ngại liên hệ nhé! Chúc bạn một ngày tốt lành!\n",
+      "timestamp": "2025-09-10T13:50:52.925238"
+    }
+  ]
+}

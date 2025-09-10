@@ -2,7 +2,10 @@ from dotenv import load_dotenv
 load_dotenv()
 import google.generativeai as genai
 import os
+import time
 from app.services.RAG.load_model import response
+from app.services.RAG.enhanced_rag import create_rag_chain
+
 
 
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -52,16 +55,40 @@ def gemini_extract_grades(question: str):
     return response.text.strip()
 
 
-def gemini_generate_answer_default(question: str) -> str:
-    """
-    Trả về câu trả lời chung chung nếu không trích xuất được điểm từ câu hỏi.
-    """
+def gemini_generate_answer_default(question: str, user_id: str, session_id: str = None) -> dict:
     try:
-        res = response(question)
-        return res
+        rag = create_rag_chain()
+        result = rag.process_query_with_session(
+            query=question,
+            user_id=user_id,
+            session_id=session_id
+        )
+
+        # Enhanced RAG trả về dict với session_id
+        if isinstance(result, dict):
+            return result
+        else:
+            # Fallback nếu RAG trả về string (backward compatibility)
+            return {
+                "response": result,
+                "session_id": session_id or f"{user_id}_{int(time.time())}",
+                "success": True
+            }
+
     except Exception as e:
         print(f"Error in RAG processing: {e}")
-        return gemini_fallback_answer(question)
+        fallback_response = gemini_fallback_answer(question)
+
+        # Tạo session_id mới nếu không có
+        import time
+        new_session_id = session_id or f"{user_id}_{int(time.time())}"
+
+        return {
+            "response": fallback_response,
+            "session_id": new_session_id,
+            "success": False,
+            "error": str(e)
+        }
 
 def gemini_fallback_answer(question: str) -> str:
     """

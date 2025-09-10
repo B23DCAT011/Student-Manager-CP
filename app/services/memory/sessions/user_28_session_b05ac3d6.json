@@ -1,0 +1,78 @@
+{
+  "session_id": "b05ac3d6",
+  "user_id": "28",
+  "created_at": "2025-09-10T13:52:49.993514",
+  "last_updated": "2025-09-10T13:54:49.127092",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello",
+      "timestamp": "2025-09-10T13:52:50.010465"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn! Rất vui được hỗ trợ bạn. Bạn có câu hỏi nào về Học viện Công nghệ Bưu chính Viễn thông không? Ví dụ như điểm chuẩn, các ngành đào tạo, hoạt động sinh viên,...\n",
+      "timestamp": "2025-09-10T13:52:51.166712"
+    },
+    {
+      "role": "user",
+      "content": "Hello",
+      "timestamp": "2025-09-10T13:53:04.510408"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn! Bạn có muốn biết thêm thông tin gì về Học viện Công nghệ Bưu chính Viễn thông không? Ví dụ như điểm chuẩn các năm gần đây, các ngành đào tạo (CNTT, Viễn thông, Kinh doanh, Truyền thông Đa phương tiện,...), hoặc các hoạt động sinh viên sôi động?\n",
+      "timestamp": "2025-09-10T13:53:05.794048"
+    },
+    {
+      "role": "user",
+      "content": "Tôi muốn biết về điểm chuẩn tất cả các năm của ngành CNTT",
+      "timestamp": "2025-09-10T13:53:30.459739"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn, rất tiếc là tôi không có thông tin điểm chuẩn ngành CNTT của tất cả các năm. Tuy nhiên, tôi có thông tin điểm chuẩn năm 2020 của ngành này là 25.0. Bạn có muốn biết thêm thông tin về các ngành khác hoặc các năm khác không? Hoặc bạn có thể tham khảo website chính thức của Học viện để có thông tin đầy đủ và chính xác nhất nhé!\n",
+      "timestamp": "2025-09-10T13:53:32.127692"
+    },
+    {
+      "role": "user",
+      "content": "Tôi vừa hỏi bạn câu gì nhỉ",
+      "timestamp": "2025-09-10T13:53:48.253901"
+    },
+    {
+      "role": "assistant",
+      "content": "Bạn vừa hỏi tôi về điểm chuẩn tất cả các năm của ngành CNTT của Học viện Công nghệ Bưu chính Viễn thông.\n",
+      "timestamp": "2025-09-10T13:53:49.245802"
+    },
+    {
+      "role": "user",
+      "content": "Tốt lắm bye bye",
+      "timestamp": "2025-09-10T13:54:00.843809"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn, rất vui được hỗ trợ bạn. Nếu bạn có bất kỳ câu hỏi nào khác về Học viện Công nghệ Bưu chính Viễn thông trong tương lai, đừng ngần ngại liên hệ nhé! Tạm biệt!\n",
+      "timestamp": "2025-09-10T13:54:02.044330"
+    },
+    {
+      "role": "user",
+      "content": "Hello",
+      "timestamp": "2025-09-10T13:54:17.827326"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn! Bạn có muốn biết thêm thông tin gì về Học viện Công nghệ Bưu chính Viễn thông không? Ví dụ như điểm chuẩn các năm gần đây của các ngành CNTT, Viễn thông, Kinh doanh? Hay bạn muốn tìm hiểu về các hoạt động sinh viên sôi động, những đêm nhạc sinh viên?\n",
+      "timestamp": "2025-09-10T13:54:19.246262"
+    },
+    {
+      "role": "user",
+      "content": "Bạn nhớ tôi đã nói gì với bạn trước kia không",
+      "timestamp": "2025-09-10T13:54:47.732347"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn, tôi nhớ bạn đã hỏi tôi về điểm chuẩn tất cả các năm của ngành CNTT của Học viện Công nghệ Bưu chính Viễn thông. Sau đó, bạn đã nói \"Tốt lắm bye bye\" để kết thúc cuộc trò chuyện trước đó.\n",
+      "timestamp": "2025-09-10T13:54:49.127092"
+    }
+  ]
+}
